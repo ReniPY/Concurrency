@@ -7,61 +7,55 @@ import (
 )
 
 func TestGenerateRandomElements(t *testing.T) {
-	t.Run("ValidSize", func(t *testing.T) {
-		size := 10
-		result := generateRandomElements(size)
-		assert.Len(t, result, size, "должна быть создана последовательность нужной длины")
-	})
+	testCases := []struct {
+		name     string
+		size     int
+		expected bool
+	}{
+		{"PositiveSize", 10, true},
+		{"ZeroSize", 0, false},
+		{"NegativeSize", -10, false},
+	}
 
-	t.Run("ZeroSize", func(t *testing.T) {
-		size := 0
-		result := generateRandomElements(size)
-		assert.Nil(t, result, "результат должен быть равен nil при размере 0")
-	})
-
-	t.Run("NegativeSize", func(t *testing.T) {
-		size := -10
-		result := generateRandomElements(size)
-		assert.Nil(t, result, "результат должен быть равен nil при отрицательном размере")
-	})
+	for _, tc := range testCases {
+		result := generateRandomElements(tc.size)
+		if !tc.expected {
+			assert.Nil(t, result, "результат должен быть равен nil при некорректном размере")
+		} else {
+			assert.NotNil(t, result, "результат не должен быть nil при положительном размере")
+			assert.Len(t, result, tc.size, "размер результата должен соответствовать входному значению")
+		}
+	}
 }
 
 func TestMaximum(t *testing.T) {
-	t.Run("EmptyArray", func(t *testing.T) {
-		arr := []int{}
-		result := maximum(arr)
-		assert.Equal(t, 0, result, "для пустого массива должно возвращаться 0")
-	})
+	testCases := []struct {
+		input    []int
+		expected int
+	}{
+		{[]int{}, 0},
+		{[]int{42}, 42},
+		{[]int{1, 5, 3, 8, 2}, 8},
+	}
 
-	t.Run("OneElement", func(t *testing.T) {
-		arr := []int{42}
-		result := maximum(arr)
-		assert.Equal(t, 42, result, "одиночное значение должно возвращаться как максимум")
-	})
-
-	t.Run("MultipleElements", func(t *testing.T) {
-		arr := []int{1, 5, 3, 8, 2}
-		result := maximum(arr)
-		assert.Equal(t, 8, result, "функция должна возвращать верный максимум")
-	})
+	for _, tc := range testCases {
+		result := maximum(tc.input)
+		assert.Equal(t, tc.expected, result, "неверное вычисление максимального значения")
+	}
 }
 
 func TestMaxChunks(t *testing.T) {
-	t.Run("EmptyArray", func(t *testing.T) {
-		arr := []int{}
-		result := maxChunks(arr)
-		assert.Equal(t, 0, result, "для пустого массива должно возвращаться 0")
-	})
+	testCases := []struct {
+		input    []int
+		expected int
+	}{
+		{[]int{}, 0},
+		{[]int{1, 5, 3, 8, 2}, 8},
+		{[]int{1, 5, 3, 8, 2, 9, 7, 4, 6}, 9},
+	}
 
-	t.Run("OneChunk", func(t *testing.T) {
-		arr := []int{1, 5, 3, 8, 2}
-		result := maxChunks(arr)
-		assert.Equal(t, 8, result, "функция должна возвращать верный максимум даже при одной порции")
-	})
-
-	t.Run("MultipleChunks", func(t *testing.T) {
-		arr := []int{1, 5, 3, 8, 2, 9, 7, 4, 6}
-		result := maxChunks(arr)
-		assert.Equal(t, 9, result, "функция должна возвращать верный максимум при разбиении на куски")
-	})
+	for _, tc := range testCases {
+		result := maxChunks(tc.input)
+		assert.Equal(t, tc.expected, result, "неверное вычисление максимального значения")
+	}
 }
